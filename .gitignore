@@ -1,0 +1,26 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Streamlit cache
+.streamlit/cache/
+
+# Virtual environments
+reminderAI/
+env/
+venv/
+
+# VSCode and PyCharm
+.vscode/
+.idea/
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Mac system files
+.DS_Store
