@@ -24,3 +24,6 @@ venv/
 
 # Mac system files
 .DS_Store
+
+
+vectorDB
