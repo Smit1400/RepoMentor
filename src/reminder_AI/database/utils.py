@@ -1,5 +1,5 @@
 import streamlit as st
-from src.reminderAI.database.objects import Project
+from src.reminder_AI.database.objects import Project
 from Home import get_project_collection
 import pymongo
 from typing import List, Dict

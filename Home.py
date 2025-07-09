@@ -7,30 +7,17 @@ import sys
 project_root = Path(os.getcwd())
 sys.path.append(project_root)
 
-from src.reminderAI.database.connect import get_connection
+from src.reminder_AI.database.connect import get_connection
+from src.reminder_AI.langchain.rag import create_graph
 
 
-@st.cache_resource
-def init_connection():
-    return get_connection()
+if "graph" not in st.session_state:
+    st.session_state.graph = create_graph()
 
 
-client = init_connection()
-
-def get_project_collection():
-    client = init_connection()
-    db = client["reminder"]
-    return db["project_details"]
-
-@st.cache_data(ttl=600)
-def get_data():
-    db = client.reminder
-    items = db.project_details.find()
-    items = list(items)  # make hashable for st.cache_data
-    return items
+result = st.session_state.graph.invoke({'question': 'Display the code of runfpgrowth in app.py file'})
+# print(result['answer'])
 
 
-items = get_data()
-
-for item in items:
-    st.write(item.get("_id"))
+# st.write(f'Context: {result["context"]}\n\n')
+st.write(f'Answer: {result["answer"].content}')

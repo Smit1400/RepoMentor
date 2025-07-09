@@ -3,9 +3,9 @@ import streamlit as st
 import datetime
 import os
 
-from src.reminderAI.database.objects import Project
-from src.reminderAI.database.utils import store_object_in_collection
-from src.reminderAI.langchain.indexing import load_github
+from src.reminder_AI.database.objects import Project
+from src.reminder_AI.database.utils import store_object_in_collection
+from src.reminder_AI.langchain.indexing import load_github
 
 
 def on_form_submit():
