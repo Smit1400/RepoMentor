@@ -1,2 +1,7 @@
 streamlit
 pymongo
+langgraph
+langchain-community
+langchain-core
+openai
+faiss-cpu

@@ -18,7 +18,7 @@ venv/
 # Environment variables / secrets
 .env
 .env.*
-
+!.env.example
 # Jupyter notebooks checkpoints
 .ipynb_checkpoints/
 
