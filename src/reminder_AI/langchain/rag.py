@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from langchain_core.documents import Document
 from langgraph.graph import StateGraph, START
 from typing_extensions import List, TypedDict
@@ -12,9 +13,14 @@ from langchain_community.vectorstores import FAISS
 import getpass
 import os
 
+load_dotenv()
 
 if not os.environ.get("OPENAI_API_KEY"):
   os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter API key for OpenAI: ")
+
+os.environ["LANGSMITH_TRACING"] = "true"
+if not os.environ.get("LANGSMITH_API_KEY"):
+    os.environ["LANGSMITH_API_KEY"] = getpass.getpass("Enter Langsmith API key: ")
 
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 llm = init_chat_model("gpt-4o-mini", model_provider="openai")
