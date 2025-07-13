@@ -9,6 +9,9 @@ def load_projects():
 if "projects" not in st.session_state:
     st.session_state.projects = load_projects()
 
+if "selected_project" in st.session_state:
+    st.session_state.selected_project = None
+
 if st.button("Reload Projects"):
     st.session_state.projects = load_projects()
     st.rerun()
@@ -17,10 +20,6 @@ if st.button("Reload Projects"):
 for proj in st.session_state.projects:
     if "_id" in proj and not isinstance(proj["_id"], str):
         proj["_id"] = str(proj["_id"])
-
-# Streamlit page config
-# st.set_page_config(page_title="Project List", layout="wide")
-# st.title("📋 My Projects")
 
 projects = st.session_state.projects
 
@@ -33,7 +32,7 @@ else:
     hdr_cols[1].markdown("**Description**")
     hdr_cols[2].markdown("**GitHub URL**")
     hdr_cols[3].markdown("**End Date**")
-    # hdr_cols[4].markdown("**ID / Action**")
+    hdr_cols[4].markdown("**Action**")
 
     # Data rows
     for proj in projects:
@@ -41,9 +40,9 @@ else:
         cols[0].write(proj.get('project_name', '(No name)'))
         cols[1].write(proj.get('project_description', ''))
 
-        git_url = proj.get('project_git', '')
+        git_url = f'https://github.com/{proj.get("project_git_repo")}/tree/{proj.get("project_git_branch")}' if proj.get("project_git_repo") else None
         if git_url:
-            cols[2].markdown(f"[🔗 Link]({git_url})")
+            cols[2].markdown(f"[🔗 Project Link]({git_url})")
         else:
             cols[2].write("-")
 
@@ -58,9 +57,10 @@ else:
         id_str = proj.get('_id', '')
         with cols[4]:
             # st.write(id_str)
-            if st.button("View", key=f"view_{id_str}"):
+            if st.button("Chat", key=f"chat_{id_str}"):
                 st.session_state.selected_project = id_str
+                st.switch_page("pages/💬_Chat.py")
 
 # Display selected project ID if chosen
-if "selected_project" in st.session_state:
-    st.write(f"Selected project ID: {st.session_state.selected_project}")
+# if "selected_project" in st.session_state:
+#     st.write(f"Selected project ID: {st.session_state.selected_project}")

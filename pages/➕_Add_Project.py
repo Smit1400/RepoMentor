@@ -7,16 +7,19 @@ from src.reminder_AI.database.objects import Project
 from src.reminder_AI.database.utils import store_object_in_collection
 from src.reminder_AI.langchain.indexing import load_github
 
+if "selected_project" in st.session_state:
+    st.session_state.selected_project = None
 
 def on_form_submit():
-    load_github(st.session_state.project_git_repo, st.session_state.project_git_branch)
-
+    index_path = load_github(st.session_state.project_git_repo, st.session_state.project_git_branch)
+    index_path_list = index_path.split("/")
     project_object = Project(
         project_name=st.session_state.project_name,
         project_description=st.session_state.project_description,
         project_git_repo=st.session_state.project_git_repo,
         project_git_branch=st.session_state.project_git_branch,
         project_end_date=st.session_state.project_end_date.isoformat(),
+        project_index_path=index_path_list
     )
     if store_object_in_collection(project_object):
         st.success("Saved Successfully!")

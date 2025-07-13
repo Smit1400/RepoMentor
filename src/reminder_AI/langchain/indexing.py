@@ -29,9 +29,10 @@ def load_github(repo_name: str, branch: str):
         file_filter=lambda fp: fp.endswith((".py", ".md")),
     )
     documents = loader.load()
-    vector_store(documents, repo_name)
+    return vector_store(documents, repo_name)
 
 def vector_store(documents, repo_name):
+    print("HERE")
     splitter = RecursiveCharacterTextSplitter(
         chunk_size = 2000,
         chunk_overlap = 500,
@@ -52,4 +53,8 @@ def vector_store(documents, repo_name):
     vector_store_object.add_documents(documents=docs, ids=uuids)
 
     faiss_name = repo_name.split("/")[1]
-    vector_store_object.save_local(f"vectorDB/{faiss_name}")
+    index_path = f"vectorDB/{faiss_name}"
+    print("here", index_path)
+    vector_store_object.save_local(index_path)
+
+    return index_path

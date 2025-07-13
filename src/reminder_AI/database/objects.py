@@ -1,6 +1,5 @@
 import uuid
-import datetime
-from typing import Optional
+from typing import List
 from pydantic import BaseModel, Field
 
 class Project(BaseModel):
@@ -10,7 +9,7 @@ class Project(BaseModel):
     project_git_repo: str = Field(...)
     project_git_branch: str = Field(...)
     project_end_date: str = Field(...)
-
+    project_index_path: List = Field(...)
     class Config:
         validate_by_name = True
         json_schema_extra = {
@@ -20,6 +19,7 @@ class Project(BaseModel):
                 "project_description": "Game",
                 "project_git_repo": "",
                 "project_git_branch": "",
-                "project_end_date": "08/13/2025"
+                "project_end_date": "08/13/2025",
+                "project_index_path": []
             }
         }

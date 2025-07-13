@@ -1,24 +1,24 @@
 import streamlit as st
-import pymongo
-from pathlib import Path
-import os
-import sys
-
-project_root = Path(os.getcwd())
-sys.path.append(project_root)
-
-from src.reminder_AI.database.connect import get_connection
+from src.reminder_AI.database.utils import get_project_by_id
 from src.reminder_AI.langchain.rag_with_memory import build_graph
+import os
 
-@st.cache_resource
-def init_connection():
-    return get_connection()
+if "proj_name" not in st.session_state:
+    st.session_state.proj_name = "....."
 
-if "selected_project" in st.session_state:
-    st.session_state.selected_project = None
+project_id = st.session_state.get("selected_project")
+if not project_id:
+    st.switch_page("pages/👀_Project_Index.py")
+    st.stop()
 
-if "graph" not in st.session_state:
-    st.session_state.graph = build_graph()
+proj = get_project_by_id(project_id)
+if proj and st.session_state.proj_name == ".....":
+    st.session_state.proj_name = proj["project_name"]
+    if "graph" not in st.session_state:
+        with st.spinner("Loading Project Index to chat...", show_time=True):
+            st.session_state.graph = build_graph(vector_store_path=os.path.join(os.getcwd(), *proj["project_index_path"]))
+            print("Graph Loaded")
+    st.rerun()
 
 def process_message(message: str):
     config = {"configurable": {"thread_id": "abc123"}}
@@ -28,9 +28,7 @@ def process_message(message: str):
     return {"type": "text", "content": f"Response: {final_msg.content}"}
 
 def main():
-    st.set_page_config(page_title="Chat Interface", layout="wide")
-    st.title("💬 ReminderAI")
-
+    st.title(f"💬 Chat with {st.session_state.proj_name}")
     if "history" not in st.session_state:
         st.session_state.history = []
 
