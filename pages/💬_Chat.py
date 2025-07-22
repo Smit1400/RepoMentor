@@ -3,23 +3,34 @@ from src.reminder_AI.database.utils import get_project_by_id
 from src.reminder_AI.langchain.rag_with_memory import build_graph
 import os
 
+# 1) One-time initialization
 if "proj_name" not in st.session_state:
-    st.session_state.proj_name = "....."
+    st.session_state.proj_name = None
+
+if "previous_project_id" not in st.session_state:
+    st.session_state.previous_project_id = None
 
 project_id = st.session_state.get("selected_project")
+
+# 2) No project? Bounce back to index
 if not project_id:
     st.switch_page("pages/👀_Project_Index.py")
     st.stop()
 
-proj = get_project_by_id(project_id)
-if proj and st.session_state.proj_name == ".....":
+# 3) If the project ID changed, reload the graph & name
+if project_id != st.session_state.previous_project_id:
+    proj = get_project_by_id(project_id)
     st.session_state.proj_name = proj["project_name"]
-    if "graph" not in st.session_state:
-        with st.spinner("Loading Project Index to chat...", show_time=True):
-            st.session_state.graph = build_graph(vector_store_path=os.path.join(os.getcwd(), *proj["project_index_path"]))
-            print("Graph Loaded")
-    st.rerun()
 
+    with st.spinner(f"Loading «{st.session_state.proj_name}»…"):
+        st.session_state.graph = build_graph(
+            vector_store_path=os.path.join(os.getcwd(), *proj["project_index_path"])
+        )
+
+    st.session_state.previous_project_id = project_id
+    # No need for st.rerun() here!
+
+# From here on out, st.session_state.graph and proj_name are always set
 def process_message(message: str):
     config = {"configurable": {"thread_id": "abc123"}}
     inputs = {"messages": [{"role": "user", "content": message}]}
@@ -29,24 +40,22 @@ def process_message(message: str):
 
 def main():
     st.title(f"💬 Chat with {st.session_state.proj_name}")
+
     if "history" not in st.session_state:
         st.session_state.history = []
 
-    user_input = st.chat_input("Your message...")
+    user_input = st.chat_input("Your message…")
     if user_input:
         st.session_state.history.append(("user", user_input, "text"))
-        result = process_message(user_input)
-        st.session_state.history.append(("assistant", result["content"], result["type"]))
+        reply = process_message(user_input)
+        st.session_state.history.append(("assistant", reply["content"], reply["type"]))
 
     for role, content, ctype in st.session_state.history:
-        if role == "user":
-            st.chat_message("user").write(content)
+        bubble = st.chat_message(role)
+        if ctype == "text":
+            bubble.write(content)
         else:
-            msg = st.chat_message("assistant")
-            if ctype == "text":
-                msg.write(content)
-            else:
-                msg.code(content, language="python")
+            bubble.code(content, language="python")
 
 if __name__ == "__main__":
     main()

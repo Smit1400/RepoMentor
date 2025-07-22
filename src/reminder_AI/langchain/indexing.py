@@ -32,7 +32,7 @@ def load_github(repo_name: str, branch: str):
     return vector_store(documents, repo_name)
 
 def vector_store(documents, repo_name):
-    print("HERE")
+    # print("HERE")
     splitter = RecursiveCharacterTextSplitter(
         chunk_size = 2000,
         chunk_overlap = 500,
@@ -54,7 +54,7 @@ def vector_store(documents, repo_name):
 
     faiss_name = repo_name.split("/")[1]
     index_path = f"vectorDB/{faiss_name}"
-    print("here", index_path)
+    # print("here", index_path)
     vector_store_object.save_local(index_path)
 
     return index_path
