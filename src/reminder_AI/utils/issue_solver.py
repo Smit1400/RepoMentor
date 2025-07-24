@@ -34,7 +34,7 @@ prompt = ChatPromptTemplate.from_messages([
 def summarize_issue(title: str, body: str) -> str:
     messages = prompt.format_messages(title=title, body=body)
     response = llm(messages)
-    print(response)
+    # print(response)
     return response.content
 
 # 4) Put it all together: for each top doc, grab metadata + summary

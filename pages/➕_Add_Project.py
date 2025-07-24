@@ -6,6 +6,7 @@ import os
 from src.reminder_AI.database.objects import Project
 from src.reminder_AI.database.utils import store_object_in_collection
 from src.reminder_AI.langchain.indexing import load_github
+from src.reminder_AI.utils.issue_loader import issues_to_vector_store
 
 if "selected_project" in st.session_state:
     st.session_state.selected_project = None
@@ -21,7 +22,7 @@ def on_form_submit():
         project_end_date=st.session_state.project_end_date.isoformat(),
         project_index_path=index_path_list
     )
-    if store_object_in_collection(project_object):
+    if store_object_in_collection(project_object) and issues_to_vector_store(st.session_state.project_git_repo):
         st.success("Saved Successfully!")
 
 with st.form("add_project", clear_on_submit=True):

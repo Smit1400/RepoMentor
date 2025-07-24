@@ -82,11 +82,12 @@ def issues_to_vector_store(repo_full_name: str = "langchain-ai/langchain"):
     issues_to_docs = create_documents(issues)
     document_to_vector_store(issues_to_docs, repo_full_name)
 
-    return "stored"
+    return True
 
 
 def rank_issues(
     query: str,
+    index_path: str,
     top_k: int = 4,
     alpha: float = 0.7,   # weight for semantic similarity
     beta: float = 0.2,    # weight for recency
@@ -94,7 +95,7 @@ def rank_issues(
 ):
     """Returns a list of (Document, combined_score), sorted desc—and we'll take top 3."""
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-    vs = FAISS.load_local(folder_path="issueDB/langchain", embeddings=embeddings, allow_dangerous_deserialization=True)
+    vs = FAISS.load_local(folder_path=f"issueDB/{index_path}", embeddings=embeddings, allow_dangerous_deserialization=True)
 
     # 3) Semantic search → [(doc, sem_score), …]
     hits = vs.similarity_search_with_score(query, k=top_k)
