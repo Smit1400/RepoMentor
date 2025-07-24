@@ -1,39 +1,42 @@
-# reminderAI
+# 🧠 RepoMentor
 
-A Streamlit-based application that helps you track project progress, send timely reminders, and discover related projects or research papers using semantic search and AI.
+An AI-powered Streamlit application that helps you **chat with GitHub repos**, **discover beginner-friendly issues**, and soon **track project progress, schedule reminders**, and **explore related work** using semantic search.
 
 ## 🚀 Features
 
-- **Interactive Chat Interface**: Converse with your projects and tasks (added).
-- **Automated Reminders**: Schedule one-off or recurring reminders (todo).
-- **Project Dashboard**: Visualize status, due dates, and progress (added).
-- **Semantic Search**: Find similar projects or papers via embeddings & VectorDB (todo).
-- **Pluggable Vector Store**: Supports FAISS, Pinecone, and other VectorDBs (currently faiss).
-- **Background Loading & Caching**: Fast startup with cached document loaders (future task).
+- **🗨️ Chat with Repos** — Use natural language to ask questions about your project’s code and documentation.
+- **🧑‍💻 First-Time Contributor Assistant** — Automatically ranks and summarizes the best beginner issues from GitHub.
+- **📦 Multi-Repo Support** — Easily switch between multiple indexed repositories.
+- **⚡ Smart Caching** — Fast, on-demand loading of issue summaries and search results.
+- **🔍 (Upcoming) Semantic Search** — Find related projects or research papers using embeddings.
+- **⏰ (Upcoming) Reminder System** — Schedule one-time or recurring reminders for projects or tasks.
+- **📊 (Upcoming) Project Dashboard** — Visualize project timelines, due dates, and contribution activity.
 
 ## 🛠️ Tech Stack
 
-- **Language**: Python 3.9+
-- **Web Framework**: Streamlit
-- **LLM Orchestration**: LangChain / Langgraph
-- **Vector Database**: FAISS
-- **Embeddings**: OpenAI / Sentence Transformers
-- **Env Management**: python-dotenv
+| Component         | Technology                          |
+|------------------|--------------------------------------|
+| Web Framework     | [Streamlit](https://streamlit.io)   |
+| LLM Orchestration | [LangChain](https://www.langchain.com) |
+| Embeddings        | OpenAI (`text-embedding-3-large`)   |
+| Vector Store      | FAISS (with pluggable support)      |
+| Database          | MongoDB (for project metadata)      |
+| Environment Mgmt  | `python-dotenv`                     |
 
 ## 💾 Installation
 
 1. **Clone the repo**
 
    ```bash
-   git clone https://github.com/your-username/reminderAI.git
-   cd reminderAI
+   git clone https://github.com/your-username/repomentor.git
+   cd repomentor
    ```
 
-2. **Create & activate a virtual environment**
+2. **Set up a virtual environment**
 
    ```bash
    python -m venv venv
-   source venv/bin/activate   # Windows: venv\Scripts\activate
+   source venv/bin/activate        # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**
@@ -44,47 +47,51 @@ A Streamlit-based application that helps you track project progress, send timely
 
 4. **Configure environment variables**
 
-   - Copy `.env.example` to `.env`
-   - Populate with your API keys and settings:
-     ```ini
-     OPENAI_API_KEY=your_openai_key
-     ```
+   Create a `.env` file based on the provided template:
 
-5. **Customize config (optional)**
-
-   - Edit `config.yaml` for advanced settings (e.g., embedding model, reminder intervals).
+   ```ini
+   OPENAI_API_KEY=your_openai_key
+   GITHUB_PERSONAL_ACCESS_TOKEN=your_github_pat
+   ```
 
 ## ⚡ Usage
+
+Launch the app:
 
 ```bash
 streamlit run Home.py
 ```
 
-- Open your browser at `http://localhost:8501`.
-- Use the **Home** tab to interact with your projects and tasks.
-- Visit **Add Project** for adding your project details
-- Explore **Search** to find related projects or papers (to be added........)
+Then open your browser at: [http://localhost:8501](http://localhost:8501)
 
-## ⚙️ Configuration Details
+### Core Pages
 
-- **.env**: Loaded via `python-dotenv` (`load_dotenv()` in `app.py`).
-- **Caching**: Document loaders are decorated with `@st.cache_data` for faster reloads.
+- **🧠 RepoMentor (Home)** — Discover beginner issues, see smart summaries, and chat with GitHub repos.
+- **💬 Chat** — Ask technical questions about any indexed repository.
+- **👀 Project Index** — Add or manage GitHub projects (automatically creates a vector store for chat).
+- **(Coming Soon)** Search & Reminders — Semantic search and deadline tracking features.
+
+## 🧪 Developer Notes
+
+- **Vector Index Path**: Stored per repo in `issueDB/<repo_name>/`
+- **MongoDB**: Stores `repo_full_name`, vector path, and `_id` for linking
+- **Caching**: Enabled via `@st.cache_data` for fast, repeated queries
+- **LLM**: Used for summarizing issues and enabling guided onboarding
 
 ## 🐛 Troubleshooting
 
-- **Slow File Loading**: Use async document loaders and increase cache TTL.
-- **Ignoring Local Folders**: Add paths to `.gitignore` (e.g., `data/`, `venv/`).
-- **Environment Issues**: Verify your `.env` and ensure `load_dotenv()` is called early in `app.py`.
+- **Nothing loads?** Make sure your `.env` is set and `OPENAI_API_KEY` is valid.
+- **GitHub issues return 0?** Check if the repo has `help wanted` or `good first issue` labels.
+- **Chat not working?** Ensure the vector store for that repo was successfully built.
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a branch: `git checkout -b feature/YourFeature`
-3. Commit your changes: `git commit -m "Add some feature"`
-4. Push to the branch: `git push origin feature/YourFeature`
-5. Open a Pull Request
+We welcome contributions!
 
-## 📄 License
+1. Fork this repo
+2. Create your branch: `git checkout -b feature/YourFeature`
+3. Commit your changes
+4. Push and open a PR 🚀
+---
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
+> Built with ❤️ to help contributors find their path and repos find their people.
